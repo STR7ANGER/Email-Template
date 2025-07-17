@@ -21,60 +21,72 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+// Read logo.png as base64 for embedding in email
+const logoPath = path.join(__dirname, 'logo.png');
+let logoBase64 = '';
+try {
+  const logoBuffer = fs.readFileSync(logoPath);
+  logoBase64 = logoBuffer.toString('base64');
+} catch (err) {
+  console.error('Could not read logo.png:', err.message);
+}
+
 // Predefined black and white email template
 const getEmailTemplate = (name, company) => {
+  // Strict black and white theme
+  const mainBg = '#000000';
+  const cardBg = '#181818';
+  const cardText = '#ffffff';
+  const accent = '#19ffe0';
+  const border = '#333333';
+  const shadow = '0 4px 24px rgba(0,0,0,0.30)';
+  const logoImg = `<img src="https://astrafloww.com/assets/image/logo.png" alt="AstraFloww Logo" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 16px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.20); background: #181818; padding: 8px;" />`;
   return `
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AstraFloww - Let's Scale Your Business</title>
 </head>
-<body style="margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #000000; color: #ffffff;">
-    <div style="max-width: 600px; margin: 0 auto; background-color: #111111; padding: 30px; border: 1px solid #333333;">
-        
-        <!-- Header -->
-        <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #333333;">
-            <h1 style="color: #ffffff; font-size: 28px; margin: 0; font-weight: bold;">AstraFloww</h1>
-            <p style="color: #cccccc; margin: 10px 0 0 0; font-size: 16px;">Business Growth Solutions</p>
-        </div>
-
-        <!-- Main Content -->
-        <div style="line-height: 1.6; color: #ffffff;">
-            <p>Hi <strong>${name}</strong>,</p>
-            
-            <p>I'm reaching out because I see you're building something impressive with <strong>${company}</strong>. As a business owner, I know you're likely juggling a dozen roles at once, from sales to customer support.</p>
-            
-            <p>Many small businesses struggle with generating a steady flow of leads while managing day-to-day operations. It's a constant battle for time and resources.</p>
-            
-            <!-- Highlight Box -->
-            <div style="background-color: #222222; padding: 20px; margin: 20px 0; border-left: 4px solid #555555; border-radius: 5px;">
-                <p style="margin: 0; color: #ffffff;">At AstraFloww, we specialize in building systems that put your growth on autopilot. We create high-performance websites and AI-powered bots that handle the heavy lifting—nurturing leads, answering FAQs, and booking appointments—so you can focus on what you do best.</p>
-            </div>
-            
-            <p>For instance, we helped Lotus Wellness triple their lead flow in under a month with a new website and an AI chatbot. Urban Realty now saves over 10 hours a week on support tasks.</p>
-            
-            <p>Could a system that saves you time and doubles your leads be a game-changer for you? I'd be happy to share a few specific ideas for <strong>${company}</strong> on a brief 15-minute call next week.</p>
-            
-            <!-- CTA Button -->
-            <div style="text-align: center; margin: 30px 0;">
-                <a href="https://astrafloww.com/contact" style="background-color: #333333; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; border: 1px solid #555555;">Schedule a Call</a>
-            </div>
-            
-            <p>Best regards,<br>
-            <strong>Team AstraFloww</strong></p>
-        </div>
-        
-        <!-- Footer -->
-        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #333333;">
-            <p style="color: #999999; font-size: 14px; margin: 0;">
-                <a href="https://astrafloww.com" style="color: #cccccc; text-decoration: none;">https://astrafloww.com</a><br>
-                Building the future of business automation
-            </p>
-        </div>
-    </div>
+<body style="margin:0; padding:0; background:${mainBg}; font-family: 'Segoe UI', Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${mainBg};">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="background:${cardBg}; color:${cardText}; border-radius:24px; box-shadow:${shadow}; padding:0; border:1px solid ${border}; margin: 40px 0;">
+          <tr>
+            <td style="padding:40px 32px 32px 32px;">
+              <div style="text-align:center; margin-bottom:28px;">
+                ${logoImg}
+                <h1 style="color:${accent}; font-size:2.1rem; margin:0 0 6px 0; font-weight:800; letter-spacing:1px;">AstraFloww</h1>
+                <p style="color:#cccccc; margin:0; font-size:1.1rem; font-weight:500;">Business Growth Solutions</p>
+              </div>
+              <div style="line-height:1.7; color:${cardText}; font-size:1.08rem;">
+                <p style="margin-top:0;">Hi <strong>${name}</strong>,</p>
+                <p>I'm reaching out because I see you're building something impressive with <strong>${company}</strong>. As a business owner, I know you're likely juggling a dozen roles at once, from sales to customer support.</p>
+                <p>Many small businesses struggle with generating a steady flow of leads while managing day-to-day operations. It's a constant battle for time and resources.</p>
+                <div style="background:#222; padding:22px; margin:28px 0 24px 0; border-left:5px solid ${accent}; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+                  <p style="margin:0; color:${cardText}; font-size:1.05rem;">At AstraFloww, we specialize in building systems that put your growth on autopilot. We create high-performance websites and AI-powered bots that handle the heavy lifting—nurturing leads, answering FAQs, and booking appointments—so you can focus on what you do best.</p>
+                </div>
+                <p>For instance, we helped Lotus Wellness triple their lead flow in under a month with a new website and an AI chatbot. Urban Realty now saves over 10 hours a week on support tasks.</p>
+                <p>Could a system that saves you time and doubles your leads be a game-changer for you? I'd be happy to share a few specific ideas for <strong>${company}</strong> on a brief 15-minute call next week.</p>
+                <div style="text-align:center; margin:38px 0 30px 0;">
+                  <a href="https://astrafloww.com/contact" style="background:${accent}; color:#000; padding:16px 36px; text-decoration:none; border-radius:8px; font-weight:700; font-size:1.08rem; display:inline-block; border:none; box-shadow:0 2px 8px rgba(0,0,0,0.10); letter-spacing:0.5px; transition:background 0.2s;">Schedule a Call</a>
+                </div>
+                <p style="margin-bottom:0;">Best regards,<br><strong>Team AstraFloww</strong></p>
+              </div>
+              <div style="text-align:center; margin-top:36px; padding-top:18px; border-top:1px solid #222;">
+                <p style="color:#bbbbbb; font-size:0.98rem; margin:0;">
+                  <a href="https://astrafloww.com" style="color:${accent}; text-decoration:none; font-weight:600;">https://astrafloww.com</a><br>
+                  Building the future of business automation
+                </p>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
   `;
