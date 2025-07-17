@@ -1,0 +1,79 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+
+# React / Next
+.next/
+out/
+.cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pyi
+*.pyo
+*.egg-info/
+.env
+.venv/
+venv/
+env/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.log
+target/
+bin/
+
+# C++
+*.o
+*.obj
+*.exe
+*.out
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Misc
+*.swp
+*.tmp
+*.bak
+
+# Coverage
+coverage/
+*.lcov
+
+# Mac
+*.DS_Store
+
+# Others
+*.iml
+*.lock
+package-lock.json
+yarn.lock
